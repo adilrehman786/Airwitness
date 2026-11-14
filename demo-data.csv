@@ -1,0 +1,51 @@
+Ward,PM2.5,PM10,NO2,Timestamp,Source
+11,62,71,39,16:00,Roadside sensor A
+12,74,79,41,16:00,Roadside sensor B
+13,83,84,44,16:00,Roadside sensor C
+14,91,77,48,16:00,School corridor
+15,87,80,47,16:00,Market sensor
+16,58,69,37,16:00,Residential
+17,92,77,48,16:00,Traffic corridor
+18,69,74,42,16:00,Housing block
+19,71,82,43,16:00,Industrial edge
+20,63,70,38,16:00,Park edge
+11,71,76,42,17:00,Roadside sensor A
+12,84,85,45,17:00,Roadside sensor B
+13,95,90,47,17:00,Roadside sensor C
+14,109,86,51,17:00,School corridor
+15,101,89,49,17:00,Market sensor
+16,63,71,39,17:00,Residential
+17,126,83,51,17:00,Traffic corridor
+18,77,78,44,17:00,Housing block
+19,84,88,45,17:00,Industrial edge
+20,70,74,40,17:00,Park edge
+11,82,81,46,18:00,Roadside sensor A
+12,90,87,49,18:00,Roadside sensor B
+13,103,93,51,18:00,Roadside sensor C
+14,119,95,52,18:00,School corridor
+15,115,92,53,18:00,Market sensor
+16,67,73,41,18:00,Residential
+17,186,92,54,18:00,Traffic corridor
+18,91,83,46,18:00,Housing block
+19,N/A,81,49,18:00,Industrial edge
+20,76,75,42,18:00,Park edge
+11,79,79,45,19:00,Roadside sensor A
+12,94,91,50,19:00,Roadside sensor B
+13,97,95,52,19:00,Roadside sensor C
+14,124,98,55,19:00,School corridor
+15,118,96,54,19:00,Market sensor
+16,69,75,42,19:00,Residential
+17,172,89,56,19:00,Traffic corridor
+18,96,87,47,19:00,Housing block
+19,88,84,51,19:00,Industrial edge
+20,73,77,43,19:00,Park edge
+11,68,74,41,20:00,Roadside sensor A
+12,81,83,45,20:00,Roadside sensor B
+13,88,89,48,20:00,Roadside sensor C
+14,116,92,53,20:00,School corridor
+15,109,88,51,20:00,Market sensor
+16,61,70,39,20:00,Residential
+17,161,84,53,20:00,Traffic corridor
+18,86,80,46,20:00,Housing block
+19,83,83,49,20:00,Industrial edge
+20,69,74,41,20:00,Park edge

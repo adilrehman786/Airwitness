@@ -1,0 +1,9 @@
+{
+  "name": "airwitness-civic-air-intelligence",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "node --check app.js && node --check api/analyze.js"
+  }
+}

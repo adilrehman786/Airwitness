@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AirWitness — Civic Air Intelligence Studio</title>
+  <meta name="description" content="AirWitness turns messy air-quality data into traceable civic action." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="aurora aurora-a"></div>
+  <div class="aurora aurora-b"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <span class="mark-ring"></span>
+        <span class="mark-core"></span>
+      </div>
+      <div>
+        <div class="brand-name">AIR<span>WITNESS</span></div>
+        <div class="brand-sub">CIVIC AIR INTELLIGENCE STUDIO</div>
+      </div>
+    </div>
+
+    <div class="status-pill">
+      <span class="live-dot"></span>
+      <span>LOCAL ANALYSIS MODE</span>
+      <span class="status-divider"></span>
+      <span id="clock">--:--:--</span>
+    </div>
+
+    <button class="ghost-btn" id="resetBtn" title="Reset demo">
+      <span>↻</span> RESET
+    </button>
+  </header>
+
+  <main class="shell">
+    <section class="hero-row">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> RAW SIGNAL → CIVIC ACTION</div>
+        <h1>Turn messy air data into a <span class="hero-gradient">briefing people can act on.</span></h1>
+        <p class="hero-text">
+          AirWitness audits inconsistent readings, surfaces local hotspots, traces findings back to source rows,
+          compares the latest briefing to the last one, and rewrites the same evidence for the person who needs it.
+        </p>
+      </div>
+
+      <div class="hero-metrics">
+        <div class="metric-chip">
+          <div class="metric-label">SOURCE ROWS</div>
+          <div class="metric-value" id="metricRows">24</div>
+        </div>
+        <div class="metric-chip">
+          <div class="metric-label">DATA FITNESS</div>
+          <div class="metric-value" id="metricFitness">93%</div>
+        </div>
+        <div class="metric-chip metric-accent">
+          <div class="metric-label">ACTIVE HOTSPOTS</div>
+          <div class="metric-value" id="metricHotspots">2</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel input-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">01 / INGEST</div>
+            <h2>Bring the signal</h2>
+          </div>
+          <span class="tiny-badge">CSV</span>
+        </div>
+
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-icon">
+            <div class="drop-pulse"></div>
+            <span>⇧</span>
+          </div>
+          <div class="drop-title">Drop a table here</div>
+          <div class="drop-sub">CSV or paste raw readings</div>
+          <input id="fileInput" type="file" accept=".csv,text/csv" hidden />
+          <button class="primary-btn" id="browseBtn">CHOOSE FILE</button>
+          <button class="text-btn" id="demoBtn">LOAD DEMO DATA <span>↗</span></button>
+        </div>
+
+        <div class="paste-wrap">
+          <div class="micro-label">PASTE TABLE</div>
+          <textarea id="pasteInput" placeholder="Ward,PM2.5,PM10,NO2,Timestamp
+17,186,92,54,18:00
+18,91,73,51,18:00"></textarea>
+          <button class="secondary-btn" id="pasteBtn">PARSE PASTED DATA</button>
+        </div>
+
+        <div class="audit-box">
+          <div class="audit-head">
+            <span class="micro-label">AI DATA AUDIT</span>
+            <span class="audit-status" id="auditStatus">READY</span>
+          </div>
+          <div id="auditList" class="audit-list"></div>
+        </div>
+      </aside>
+
+      <section class="panel radar-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">02 / DETECT</div>
+            <h2>City signal field</h2>
+          </div>
+          <div class="map-legend">
+            <span><i class="dot low"></i>stable</span>
+            <span><i class="dot watch"></i>watch</span>
+            <span><i class="dot hot"></i>hotspot</span>
+          </div>
+        </div>
+
+        <div class="radar-wrap">
+          <div class="radar-grid"></div>
+          <div class="radar-ring ring-1"></div>
+          <div class="radar-ring ring-2"></div>
+          <div class="radar-ring ring-3"></div>
+          <div class="radar-sweep"></div>
+          <div class="radar-center"></div>
+          <div id="nodeLayer" class="node-layer"></div>
+          <div class="radar-label label-n">N</div>
+          <div class="radar-label label-e">E</div>
+          <div class="radar-label label-s">S</div>
+          <div class="radar-label label-w">W</div>
+          <div class="radar-coord">AIR GRID // WARD LEVEL</div>
+        </div>
+
+        <div class="finding-strip">
+          <div class="strip-label">TOP SIGNAL</div>
+          <div class="finding-main">
+            <div class="finding-icon">!</div>
+            <div>
+              <div class="finding-title" id="topFindingTitle">Ward 17 · PM2.5 spike</div>
+              <div class="finding-copy" id="topFindingCopy">186 µg/m³ · +102% vs local baseline</div>
+            </div>
+          </div>
+          <button class="evidence-btn" id="evidenceBtn">SHOW EVIDENCE ↘</button>
+        </div>
+      </section>
+
+      <aside class="panel brief-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">03 / BRIEF</div>
+            <h2>Civic lens</h2>
+          </div>
+          <div class="ai-orb"><span></span> AI</div>
+        </div>
+
+        <div class="audience-tabs" id="audienceTabs">
+          <button class="audience active" data-audience="ward">WARD OFFICER</button>
+          <button class="audience" data-audience="housing">HOUSING</button>
+          <button class="audience" data-audience="school">SCHOOL</button>
+        </div>
+
+        <div class="brief-card">
+          <div class="brief-title" id="briefTitle">WARD 17 // DECISION BRIEF</div>
+          <div class="brief-body" id="briefBody"></div>
+          <div class="action-stack" id="actionStack"></div>
+        </div>
+
+        <div class="confidence-row">
+          <div>
+            <div class="micro-label">EVIDENCE CONFIDENCE</div>
+            <div class="confidence-value" id="confidenceValue">87%</div>
+          </div>
+          <div class="confidence-bar"><span id="confidenceBar"></span></div>
+        </div>
+
+        <button class="primary-btn full" id="generateBtn">GENERATE BRIEF ↗</button>
+      </aside>
+    </section>
+
+    <section class="lower-grid">
+      <div class="panel evidence-panel" id="evidencePanel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">04 / TRACE</div>
+            <h2>Evidence chain</h2>
+          </div>
+          <span class="tiny-badge">TRACEABLE</span>
+        </div>
+
+        <div class="evidence-grid">
+          <div class="evidence-card hot">
+            <div class="evidence-top"><span class="signal-tag red">HOTSPOT</span><span class="mono">ROW 14</span></div>
+            <div class="evidence-number">186 <span>µg/m³</span></div>
+            <div class="evidence-name">PM2.5 · Ward 17</div>
+            <div class="evidence-meta">06:00 PM · source reading</div>
+            <div class="evidence-bar"><span style="width:96%"></span></div>
+            <div class="evidence-foot"><span>BASELINE 92</span><strong>+102%</strong></div>
+          </div>
+
+          <div class="evidence-card">
+            <div class="evidence-top"><span class="signal-tag amber">CHANGE</span><span class="mono">ROWS 13–15</span></div>
+            <div class="evidence-number">3 <span>readings</span></div>
+            <div class="evidence-name">Evening cluster</div>
+            <div class="evidence-meta">Pattern repeats across 18:00–20:00</div>
+            <div class="evidence-bar"><span style="width:78%"></span></div>
+            <div class="evidence-foot"><span>CONFIDENCE</span><strong>78%</strong></div>
+          </div>
+
+          <div class="evidence-card">
+            <div class="evidence-top"><span class="signal-tag blue">QUALITY</span><span class="mono">ROW 19</span></div>
+            <div class="evidence-number">N/A <span>PM2.5</span></div>
+            <div class="evidence-name">Ward 19 gap</div>
+            <div class="evidence-meta">Inference blocked · data remains unknown</div>
+            <div class="evidence-bar muted"><span style="width:34%"></span></div>
+            <div class="evidence-foot"><span>QUALITY HIT</span><strong>−4 pts</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel delta-panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker">05 / COMPARE</div>
+            <h2>Briefing evolution</h2>
+          </div>
+          <span class="compare-badge">LAST RUN → NOW</span>
+        </div>
+
+        <div class="delta-table">
+          <div class="delta-row delta-head"><span>MEASURE</span><span>PREVIOUS</span><span>NOW</span><span>Δ</span></div>
+          <div class="delta-row"><span>PM2.5 peak</span><span>91</span><span>186</span><strong class="up">+104%</strong></div>
+          <div class="delta-row"><span>PM10 peak</span><span>77</span><span>92</span><strong class="up">+19%</strong></div>
+          <div class="delta-row"><span>NO₂ peak</span><span>48</span><span>54</span><strong class="up">+13%</strong></div>
+          <div class="delta-row"><span>Hotspots</span><span>1</span><span>2</span><strong class="up">+1</strong></div>
+          <div class="delta-row"><span>Data fitness</span><span>97%</span><span>93%</span><strong class="down">−4 pts</strong></div>
+        </div>
+
+        <div class="delta-callout">
+          <span class="callout-pulse"></span>
+          <div>
+            <strong>New in this briefing</strong>
+            <div>Evening concentration is now the dominant local pattern.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel bottom-panel">
+      <div class="scenario-side">
+        <div class="panel-kicker">06 / SCENARIO LAB</div>
+        <h2>What if the city acts?</h2>
+        <p>Test a proposed intervention without pretending the estimate is an observed fact.</p>
+        <div class="scenario-options">
+          <label class="toggle-row"><span>Restrict heavy vehicles 4–8 PM</span><input type="checkbox" data-sim="traffic" checked><i></i></label>
+          <label class="toggle-row"><span>Cancel outdoor school activities</span><input type="checkbox" data-sim="school"><i></i></label>
+          <label class="toggle-row"><span>Increase roadside monitoring</span><input type="checkbox" data-sim="monitor" checked><i></i></label>
+        </div>
+        <button class="secondary-btn full" id="simulateBtn">RUN SCENARIO ↗</button>
+      </div>
+
+      <div class="scenario-result">
+        <div class="scenario-header">
+          <span class="micro-label">AI SCENARIO ESTIMATE</span>
+          <span class="estimate-chip">NOT OBSERVED DATA</span>
+        </div>
+        <div class="impact-number" id="impactNumber">−28<span>%</span></div>
+        <div class="impact-label">estimated outdoor exposure during the peak window</div>
+        <div class="impact-bars">
+          <div class="impact-bar"><span>WITHOUT ACTION</span><i style="width:94%"></i></div>
+          <div class="impact-bar"><span>WITH ACTION</span><i id="impactWidth" style="width:66%"></i></div>
+        </div>
+        <div class="scenario-note" id="scenarioNote">Model estimate based on the selected interventions and observed evening pattern. Real-world effect may differ.</div>
+      </div>
+
+      <div class="citizen-side">
+        <div class="panel-kicker">07 / CITIZEN LAYER</div>
+        <div class="citizen-title-row">
+          <h2>Citizen advisory</h2>
+          <select id="languageSelect">
+            <option value="en">ENGLISH</option>
+            <option value="hi">हिन्दी</option>
+            <option value="mr">मराठी</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </div>
+        <div class="citizen-card" id="citizenCard"></div>
+        <button class="secondary-btn full" id="advisoryBtn">REWRITE FOR CITIZENS ↗</button>
+      </div>
+    </section>
+
+    <section class="footer-note">
+      <div><span class="footer-pulse"></span> AirWitness demo dataset · synthetic civic observations · no live health advice</div>
+      <div>GEMINI-READY · EVIDENCE-FIRST · LOCAL BY DESIGN</div>
+    </section>
+  </main>
+
+  <dialog id="sourceDialog" class="source-dialog">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <div>
+          <div class="panel-kicker">SOURCE INSPECTOR</div>
+          <h2>Why did AirWitness flag this?</h2>
+        </div>
+        <button class="icon-btn" id="closeDialog">×</button>
+      </div>
+      <div class="source-explainer">
+        <div class="source-highlight">ROW 14</div>
+        <div>
+          <strong>PM2.5 = 186 µg/m³</strong>
+          <p>The model flagged Ward 17 because this reading is ~2.0× the local baseline and aligns with the 18:00–20:00 cluster.</p>
+        </div>
+      </div>
+      <div class="mini-table">
+        <div class="mini-row head"><span>ROW</span><span>WARD</span><span>PM2.5</span><span>PM10</span><span>NO₂</span><span>TIME</span></div>
+        <div class="mini-row hi"><span>14</span><span>17</span><strong>186</strong><span>92</span><span>54</span><span>18:00</span></div>
+        <div class="mini-row"><span>15</span><span>17</span><span>172</span><span>89</span><span>56</span><span>19:00</span></div>
+        <div class="mini-row"><span>16</span><span>17</span><span>161</span><span>84</span><span>53</span><span>20:00</span></div>
+      </div>
+      <div class="fact-grid">
+        <div><span>OBSERVED</span><strong>186</strong></div>
+        <div><span>BASELINE</span><strong>92</strong></div>
+        <div><span>DELTA</span><strong>+102%</strong></div>
+        <div><span>CONFIDENCE</span><strong>87%</strong></div>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./app.js"></script>
+</body>
+</html>
